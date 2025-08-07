@@ -6,6 +6,7 @@ Background:
     Given the store is ready to service customers
     And a product "Bread" with price 20.50 and stock of 5 exists
     And a product "Jam" with price 80.00 and stock of 10 exists
+    And a product "Soda" with price 12.50 and stock of 15 exists
 
 Scenario: Buy one product
     When I buy "Bread" with quantity 2
@@ -15,3 +16,28 @@ Scenario: Buy multiple products
     When I buy "Bread" with quantity 2
     And I buy "Jam" with quantity 1
     Then total should be 121.00
+    
+Scenario: Buy three products
+    When I buy "Bread" with quantity 2
+    And I buy "Jam" with quantity 1
+    And I buy "Soda" with quantity 1
+    Then total should be 133.50
+
+Scenario: buy one product with quantity more than its own stocks
+    When I overbought "Bread" with quantity 10
+    Then total should be 0
+
+Scenario: buy more than one products with quantity more than its own stocks
+    When I overbought "Bread" with quantity 10
+    And I overbought "Jam" with quantity 15
+    Then total should be 0
+
+Scenario: bought one product and overbought another one product
+    When I buy "Bread" with quantity 2
+    And I overbought "Jam" with quantity 15
+    Then total should be 41.00
+
+Scenario: bought one product and overbought that product again
+    When I buy "Bread" with quantity 2
+    And I overbought "Bread" with quantity 4
+    Then total should be 41.00

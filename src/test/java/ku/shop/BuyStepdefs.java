@@ -5,6 +5,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BuyStepdefs {
 
@@ -23,7 +24,7 @@ public class BuyStepdefs {
     }
 
     @When("I buy {string} with quantity {int}")
-    public void i_buy_with_quantity(String name, int quantity) {
+    public void i_buy_with_quantity(String name, int quantity) throws NotEnoughQuantityException{
         Product prod = catalog.getProduct(name);
         order.addItem(prod, quantity);
     }
@@ -31,6 +32,12 @@ public class BuyStepdefs {
     @Then("total should be {float}")
     public void total_should_be(double total) {
         assertEquals(total, order.getTotal());
+    }
+
+    @When("I overbought {string} with quantity {int}")
+    public void iOverbuyWithQuantity(String name, int quantity) {
+        Product prod = catalog.getProduct(name);
+        assertThrows(NotEnoughQuantityException.class, () -> order.addItem(prod, quantity));
     }
 }
 
